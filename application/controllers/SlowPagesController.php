@@ -1,7 +1,7 @@
 <?php
 require_once("application/controllers/AbstractLoggedInController.php");
-require_once("hlis/profilers/src/PageProfiler.php");
-require_once("hlis/profilers/src/PageProfilerResults.php");
+require_once("plugins/pcms_profiler/application/models/profilers/PageProfiler.php");
+require_once("plugins/pcms_profiler/application/models/profilers/PageProfilerResults.php");
 
 class SlowPagesController extends AbstractLoggedInController
 {
