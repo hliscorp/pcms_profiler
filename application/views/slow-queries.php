@@ -34,4 +34,4 @@
 </div>
 <!-- /user-table__content -->
 </div>
-<import file="application/views/header"/>
+<import file="application/views/footer"/>
