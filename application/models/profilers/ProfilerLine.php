@@ -6,6 +6,8 @@
  * Time: 13:59
  */
 
+namespace gtm\profiler;
+
 class ProfilerLine
 {
     public $date;

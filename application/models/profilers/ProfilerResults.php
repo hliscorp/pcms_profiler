@@ -1,4 +1,7 @@
 <?php
+
+namespace gtm\profiler;
+
 require_once("ProfilerLine.php");
 
 /**

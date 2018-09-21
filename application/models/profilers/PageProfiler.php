@@ -1,4 +1,9 @@
 <?php
+
+namespace gtm\profiler;
+
+use gtm\profiler\Profiler;
+
 require_once("Profiler.php");
 
 /**
@@ -11,7 +16,8 @@ class PageProfiler extends Profiler
      *
      * @return string
      */
-    protected function getFileName() {
+    protected function getFileName()
+    {
         return "index.php";
     }
 }

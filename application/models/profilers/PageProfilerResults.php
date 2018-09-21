@@ -1,4 +1,9 @@
 <?php
+
+namespace gtm\profiler;
+
+
+
 require_once("ProfilerResults.php");
 
 /**
