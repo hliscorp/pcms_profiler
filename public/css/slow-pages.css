@@ -1,0 +1,17 @@
+@CHARSET "UTF-8";
+
+.user-table__header>div:nth-child(1), .user-table__row>div:nth-child(1) {
+    width: 10%
+}
+
+.user-table__header>div:nth-child(2), .user-table__row>div:nth-child(2) {
+    width: 15%
+}
+
+.user-table__header>div:nth-child(3), .user-table__row>div:nth-child(3) {
+    width: 20%
+}
+
+.user-table__header>div:nth-child(4), .user-table__row>div:nth-child(4) {
+    width: 10%
+}

@@ -1,0 +1,30 @@
+{
+  "name": "pcms_profiler",
+  "version": "0.0.1",
+  "dependencies": {
+  },
+  "configuration": {
+    "routes": [
+      {
+        "route": {
+          "id": "pcms_slow_queries",
+          "url": "slow-queries",
+          "controller": "plugins/pcms_profiler/application/controllers/SlowQueriesController.php",
+          "view": "plugins/pcms_profiler/application/views/slow-queries.php"
+        }
+      },
+      {
+        "route": {
+          "id": "pcms_slow_pages",
+          "url": "slow-pages",
+          "controller": "plugins/pcms_profiler/application/controllers/SlowPagesController.php",
+          "view": "plugins/pcms_profiler/application/views/slow-pages.php"
+        }
+      }
+    ]
+  },
+  "persistence": {
+    "dbupdate_script": "install.sql",
+    "dbdowngrade_script": "uninstall.sql"
+  }
+}
