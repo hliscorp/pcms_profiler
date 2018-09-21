@@ -1,4 +1,4 @@
-<import file="header"/>
+<import file="application/views/header"/>
 <form action="" method="POST">
     <std:if condition="${data.status}">
         <input type="hidden" name="status" value="0"/>
@@ -34,4 +34,4 @@
 </div>
 <!-- /user-table__content -->
 </div>
-<import file="footer"/>
+<import file="application/views/header"/>
