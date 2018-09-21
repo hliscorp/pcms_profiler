@@ -13,11 +13,11 @@ use gtm\profiler\Rights;
 $include = preg_replace("/\\\\/", "/", dirname(dirname(dirname(__FILE__))));
 require_once "$include/application/models/InstallInterface.php";
 
-require_once "application/models/Query.php";
-require_once "application/models/Resources.php";
-require_once "application/models/Panels.php";
-require_once "application/models/Rights.php";
-require_once "application/models/Menus.php";
+require_once "$include/application/models/query/Query.php";
+require_once "$include/application/models/query/Resources.php";
+require_once "$include/application/models/query/Panels.php";
+require_once "$include/application/models/query/Rights.php";
+require_once "$include/application/models/query/Menus.php";
 
 /**
  * Created by PhpStorm.
