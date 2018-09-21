@@ -1,11 +1,23 @@
 <?php
 
+use gtm\profiler\Menus;
+use gtm\profiler\Menu;
 use gtm\profiler\Query;
+use gtm\profiler\Resource;
+use gtm\profiler\Resources;
+use gtm\profiler\Panels;
+use gtm\profiler\Panel;
+use gtm\profiler\Right;
+use gtm\profiler\Rights;
 
 $include = preg_replace("/\\\\/", "/", dirname(dirname(dirname(__FILE__))));
 require_once "$include/application/models/InstallInterface.php";
 
-require_once "plugins/pcms_profiler/application/models/Resources.php";
+require_once "application/models/Query.php";
+require_once "application/models/Resources.php";
+require_once "application/models/Panels.php";
+require_once "application/models/Rights.php";
+require_once "application/models/Menus.php";
 
 /**
  * Created by PhpStorm.
@@ -28,7 +40,6 @@ class Install implements InstallInterface
     private $configurationJson;
     private $configurationJsonObject;
     private $configurationXmlObject;
-    private $mysqli;
 
     function __construct()
     {
@@ -49,62 +60,7 @@ class Install implements InstallInterface
 
     private function setupDb()
     {
-        // TODO: add setup db code here
-        $setupMessage = new SetupMessage();
-        $setupMessage->status = true;
-        $setupMessage->message = "DB setup successfully";
-        return $setupMessage;
-    }
-
-    private function getRoutes($fileLocation)
-    {
-        $xml = simplexml_load_file($fileLocation);
-        $output = array();
-        $tmp = (array)$xml->routes;
-        $tmp = $tmp["route"];
-        foreach ($tmp as $info) {
-            $output[] = (string)$info['url'];
-        }
-        return $output;
-    }
-
-    private function checkRequirements()
-    {
-        // Check if we have anything we need to proceed with the installation
-        $ret = array();
-        $ret[] = $this->checkTmsServer();
-        return $ret;
-    }
-
-    /**
-     * @return SetupMessage
-     */
-    private function checkTmsServer()
-    {
-        $filename = $this->documentRoot . "/" . $this->tmsServerRoot;
-        $setupMessage = new SetupMessage();
-
-        if (file_exists($filename)) {
-            $setupMessage->status = true;
-            $setupMessage->message = "The TMS Server was is present.";
-        } else {
-            $setupMessage->status = false;
-            $setupMessage->message = "TMS Server not found";
-        }
-
-        return $setupMessage;
-    }
-
-    /**
-     * @param $requirementsMeet
-     * @return mixed
-     */
-    private function requirementMeet($requirementsMeet)
-    {
-        foreach ($requirementsMeet as $requirement) {
-            if ($requirement->status == false) return false;
-        }
-        return true;
+        return $this->makeResponse("DB setup successfully");
     }
 
     function setConfigurationXml($configurationXml)
@@ -121,7 +77,6 @@ class Install implements InstallInterface
 
     private function getEnvironment()
     {
-        //return $this->configurationJsonObject->persistence->environment;
         return $this->configurationXmlObject->plugins_configuration->environment;
     }
 
@@ -135,23 +90,6 @@ class Install implements InstallInterface
         return $attr['@attributes'];
     }
 
-    private function saveRoutes($routes, $link)
-    {
-        foreach ($routes as $route) {
-            $this->query("INSERT IGNORE INTO tms__route_patterns SET value = '$route'");
-        }
-    }
-
-    private function connect()
-    {
-        if ($this->mysqli) return $this->mysqli;
-        $env = (string)$this->getEnvironment();
-        $credentials = $this->getCredentials($env);
-        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-        $this->mysqli = new mysqli($credentials['host'], $credentials['username'], $credentials['password'], $credentials['schema']);
-        return $this->mysqli;
-    }
-
     /**
      * Setup menu items
      */
@@ -159,82 +97,67 @@ class Install implements InstallInterface
     {
 
         $query = new Query($this->getCredentials($this->getEnvironment()));
-        $resources = new \gtm\profiler\Resources();
 
-        $resourceId = $this->resourceExists('Profiler');
+        $resources = new Resources($query);
+        $panels = new Panels($query);
+        $rights = new Rights($query);
+
+        /* -------- Slow Queries -------- */
+        $ret = $resources->getByName("Slow Queries");
+
+        if ($ret) return $this->makeResponse("Slow Queries already exists");
+
+        $resource = new Resource();
+        $resource->name = "Slow Queries";
+        $resourceId = $resources->add($resource);
+
+        $panel = new Panel();
+        $panel->url = "slow-queries";
+        $panel->id = $resourceId;
+        $panelId = $panels->add($panel);
+
+        $menus = new Menus($query);
+        $menu = new Menu();
+        $menu->holder = "Admin";
+        $menu->panel_id = $panelId;
+        $menuId = $menus->add($menu);
+
+        $right = new Right();
+        $right->resource_id = $resourceId;
+        $rights->add($right);
+
+        /* -------- Slow Pages -------- */
+        $resource = new Resource();
+        $resource->name = "Slow Pages";
+        $resourceId = $resources->add($resource);
+
+        $panel = new Panel();
+        $panel->url = "slow-pages";
+        $panel->id = $resourceId;
+        $panelId = $panels->add($panel);
+
+        $right = new Right();
+        $right->resource_id = $resourceId;
+        $rights->add($right);
+
+        $menus = new Menus($query);
+        $menu = new Menu();
+        $menu->holder = "Admin";
+        $menu->panel_id = $panelId;
+        $menuId = $menus->add($menu);
+
+        return $this->makeResponse("Menu setup successfully");
+
+    }
+
+    /**
+     * @return SetupMessage
+     */
+    private function makeResponse($message, $status = true)
+    {
         $setupMessage = new SetupMessage();
-
-        if ($resourceId) {
-            $setupMessage->status = true;
-            $setupMessage->message = "Profiler menu already exists";
-            return $setupMessage;
-        }
-
-        /* ------------------------ Slow Queries ------------------------ */
-
-        // create resources
-        $this->query("INSERT INTO resources SET name = 'Slow Queries'");
-        $resourceId = $this->getInsertId();
-        $parentId = $resourceId;
-
-        // create the panels
-        $ret = $this->query("INSERT INTO panels SET id = $resourceId, url = 'slow-queries'");
-        $panelId = $this->getInsertId();
-        $masterPanelId = $panelId;
-
-        // create rights
-        $this->query("INSERT INTO rights SET resource_id = $panelId, department_id = 2, level_id = 1");
-
-        /* ------------------------ Slow Pages ------------------------ */
-
-        // create resources
-        $this->query("INSERT INTO resources SET name = 'Player Reviews Change Dashboard'");
-        $resourceId = $this->getInsertId();
-
-        // create the panels
-        $this->query("INSERT INTO panels SET id = $resourceId, parent_id = $parentId, url = 'player-reviews-dashboard/change'");
-        $panelId = $this->getInsertId();
-
-        // create rights
-        $this->query("INSERT INTO rights SET resource_id = $panelId, department_id = 2, level_id = 1");
-
-
-        // set parent menu
-        $this->query("INSERT INTO menu SET panel_id = $masterPanelId, holder = 'Admin'");
-
         $setupMessage->status = true;
-        $setupMessage->message = "Menu setup successfully";
+        $setupMessage->message = $message;
         return $setupMessage;
-
-    }
-
-    private function query($query)
-    {
-        $this->connect();
-        try {
-            $ret = $this->mysqli->query($query);
-        } catch (Exception $e) {
-            echo "$e->getMessage()\n";
-        }
-
-        return $ret;
-    }
-
-    private function getInsertId()
-    {
-        return $this->mysqli->insert_id;
-    }
-
-    private function resourceExists($name)
-    {
-        $result = $this->query("SELECT id FROM resources WHERE name = '$name'");
-
-        if ($result) {
-            while ($row = $result->fetch_row()) {
-                return (int)$row[0];
-            }
-        }
-
-        return null;
     }
 }
