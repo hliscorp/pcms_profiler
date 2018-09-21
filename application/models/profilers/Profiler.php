@@ -2,6 +2,8 @@
 
 namespace gtm\profiler;
 
+use Application;
+
 /**
  * Toggles profiling in remote sites. Requires:
  * - development environment already detected
@@ -23,7 +25,7 @@ abstract class Profiler
      * @param Application $application
      * @throws Exception
      */
-    public function __construct(\Application $application)
+    public function __construct(Application $application)
     {
         $this->filePath = $this->getFilePath($application);
     }
@@ -35,7 +37,7 @@ abstract class Profiler
      * @return string
      * @throws Exception
      */
-    private function getFilePath(\Application $application)
+    private function getFilePath(Application $application)
     {
         $parentProjectPath = (string)$application->getXML()->parent_site->{$application->getAttribute("environment")}["path"];
         $normalizedFile = $parentProjectPath . "/" . $this->getFileName();

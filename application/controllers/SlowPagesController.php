@@ -1,5 +1,8 @@
 <?php
 
+use gtm\profiler\PageProfiler;
+use gtm\profiler\PageProfilerResults;
+
 require_once("application/controllers/AbstractLoggedInController.php");
 require_once("plugins/pcms_profiler/application/models/profilers/PageProfiler.php");
 require_once("plugins/pcms_profiler/application/models/profilers/PageProfilerResults.php");

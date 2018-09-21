@@ -2,6 +2,8 @@
 
 namespace gtm\profiler;
 
+use Application;
+
 require_once("ProfilerLine.php");
 
 /**
@@ -16,7 +18,8 @@ abstract class ProfilerResults
      *
      * @param Application $application Holds information about development environment and parent_site XML tag
      */
-    public function __construct(Application $application) {
+    public function __construct(Application $application)
+    {
         $this->setLines($application);
     }
 
@@ -25,14 +28,15 @@ abstract class ProfilerResults
      *
      * @param Application $application
      */
-    private function setLines(Application $application) {
-        $parentProjectPath = (string) $application->getXML()->parent_site->{$application->getAttribute("environment")}["path"];
-        $logFile = $parentProjectPath."/".$this->getFileName();
-        if(!file_exists($logFile)) return;
+    private function setLines(Application $application)
+    {
+        $parentProjectPath = (string)$application->getXML()->parent_site->{$application->getAttribute("environment")}["path"];
+        $logFile = $parentProjectPath . "/" . $this->getFileName();
+        if (!file_exists($logFile)) return;
         $currentDate = date("Y-m-d");
         $elements = file($logFile);
-        foreach($elements as $line) {
-            if(strpos($line, $currentDate) !==0) continue; // we only care for lines that happened today
+        foreach ($elements as $line) {
+            if (strpos($line, $currentDate) !== 0) continue; // we only care for lines that happened today
             $parts = explode("\t", $line);
             $this->lines[] = $this->getLineDetails($parts);
         }
@@ -45,7 +49,8 @@ abstract class ProfilerResults
      *
      * @return ProfilerLine[] List of log lines info.
      */
-    public function getLines() {
+    public function getLines()
+    {
         return $this->lines;
     }
 

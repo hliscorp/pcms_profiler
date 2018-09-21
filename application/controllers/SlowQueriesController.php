@@ -1,6 +1,7 @@
 <?php
 
 use \gtm\profiler\QueryProfiler;
+use \gtm\profiler\QueryProfilerResults;
 
 require_once("application/controllers/AbstractLoggedInController.php");
 require_once("plugins/pcms_profiler/application/models/profilers/QueryProfilerResults.php");
