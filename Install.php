@@ -72,7 +72,7 @@ class Install implements InstallInterface
     function setConfigurationJson($configurationJson)
     {
         $this->configurationJson = $configurationJson;
-        $this->configurationJsonObject = json_decode(file_get_contents($this->configurationJson));
+        // $this->configurationJsonObject = json_decode(file_get_contents($this->configurationJson));
     }
 
     private function getEnvironment()
