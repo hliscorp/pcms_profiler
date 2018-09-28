@@ -9,7 +9,6 @@
 namespace gtm\profiler;
 
 require_once "entities/Resource.php";
-require_once "Query.php";
 
 class Resources
 {

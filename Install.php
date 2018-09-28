@@ -4,7 +4,7 @@ namespace gtm\cms\plugin\profiler;
 
 use gtm\profiler\Query;
 use InstallInterface;
-
+use mysqli;
 
 $include = preg_replace("/\\\\/", "/", dirname(dirname(dirname(__FILE__))));
 require_once "$include/application/models/InstallInterface.php";
@@ -121,7 +121,7 @@ class Install implements InstallInterface
     function setConfigurationJson($configurationJson)
     {
         $this->configurationJson = $configurationJson;
-        $this->configurationJsonObject = json_decode(file_get_contents($this->configurationJson));
+        // $this->configurationJsonObject = json_decode(file_get_contents($this->configurationJson));
     }
 
     private function getEnvironment()
@@ -164,7 +164,7 @@ class Install implements InstallInterface
     {
 
         $query = new Query($this->getCredentials($this->getEnvironment()));
-        $resources = new \gtm\profiler\Resources();
+        $resources = new \gtm\profiler\Resources($query);
 
         $resourceId = $this->resourceExists('Profiler');
         $setupMessage = new SetupMessage();
