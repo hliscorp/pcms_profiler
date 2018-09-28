@@ -8,8 +8,8 @@
 
 namespace gtm\profiler;
 
-require_once "plugins/pcms_profiler/application/models/entities/Resource.php";
-require_once "plugins/pcms_profiler/application/models/Query.php";
+require_once "entities/Resource.php";
+require_once "Query.php";
 
 class Resources
 {

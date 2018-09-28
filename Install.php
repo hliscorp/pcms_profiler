@@ -1,11 +1,16 @@
 <?php
 
+namespace gtm\cms\plugin\profiler;
+
 use gtm\profiler\Query;
+use InstallInterface;
+
 
 $include = preg_replace("/\\\\/", "/", dirname(dirname(dirname(__FILE__))));
 require_once "$include/application/models/InstallInterface.php";
+require_once "$include/application/models/query/Query.php";
 
-require_once "plugins/pcms_profiler/application/models/Resources.php";
+require_once "application/models/Resources.php";
 
 /**
  * Created by PhpStorm.
@@ -39,7 +44,7 @@ class Install implements InstallInterface
     /**
      * This is the second step
      */
-    function install()
+    public function install()
     {
         $dbSetup = $this->setupDb();
         $menuSetup = $this->setupMenu();
