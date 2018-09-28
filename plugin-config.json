@@ -10,7 +10,8 @@
           "id": "pcms_slow_queries",
           "url": "slow-queries",
           "controller": "plugins/pcms_profiler/application/controllers/SlowQueriesController",
-          "view": "plugins/pcms_profiler/application/views/slow-queries"
+          "view": "plugins/pcms_profiler/application/views/slow-queries",
+          "foo": "baz"
         }
       },
       {
