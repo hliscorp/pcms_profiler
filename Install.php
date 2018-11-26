@@ -5,7 +5,7 @@ use gtm\profiler\Query;
 $include = preg_replace("/\\\\/", "/", dirname(dirname(dirname(__FILE__))));
 require_once "$include/application/models/InstallInterface.php";
 
-require_once "plugins/pcms_profiler/application/models/Resources.php";
+require_once "application/models/dao/Resources.php";
 
 /**
  * Created by PhpStorm.
