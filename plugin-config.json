@@ -9,16 +9,17 @@
         "route": {
           "id": "pcms_slow_queries",
           "url": "slow-queries",
-          "controller": "plugins/pcms_profiler/application/controllers/SlowQueriesController.php",
-          "view": "plugins/pcms_profiler/application/views/slow-queries.php"
+          "controller": "plugins/pcms_profiler/application/controllers/SlowQueriesController",
+          "view": "plugins/pcms_profiler/application/views/slow-queries",
+          "foo": "baz"
         }
       },
       {
         "route": {
           "id": "pcms_slow_pages",
           "url": "slow-pages",
-          "controller": "plugins/pcms_profiler/application/controllers/SlowPagesController.php",
-          "view": "plugins/pcms_profiler/application/views/slow-pages.php"
+          "controller": "plugins/pcms_profiler/application/controllers/SlowPagesController",
+          "view": "plugins/pcms_profiler/application/views/slow-pages"
         }
       }
     ]
