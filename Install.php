@@ -7,6 +7,7 @@ $include = preg_replace("/\\\\/", "/", dirname(dirname(dirname(__FILE__))));
 require_once "$include/application/models/InstallInterface.php";
 require_once "$include/application/models/dao/Resources.php";
 require_once "$include/application/models/query/Query.php";
+require_once "$include/application/models/query/Resources.php";
 
 /**
  * Created by PhpStorm.
